@@ -3,14 +3,18 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 // リダイレクト先のURL
 var URL = "https://docs.google.com/forms/d/e/1FAIpQLScpiOMWtDtsZE_dapZGfHNcMlGfpdv2SQpDUVsB5nbM1G2E9w/viewform?usp=pp_url"
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func handler(c echo.Context) error {
+	log.Println("Request received")
+
 	// `X-Forwarded-User` ヘッダーを取得
-	user := r.Header.Get("X-Forwarded-User")
+	user := c.Request().Header.Get("X-Forwarded-User")
 	if user == "" {
 		// ユーザー名が取得できなかった場合は "unknown" とする
 		user = "unknown"
@@ -19,16 +23,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	var userURL = URL + "&entry.574283270=" + user
 
 	// リダイレクト
-	http.Redirect(w, r, userURL, http.StatusFound)
+	return c.Redirect(http.StatusFound, userURL)
 }
 
 func main() {
 	// サーバーのルートハンドラーを設定
-	http.HandleFunc("/", handler)
+	e := echo.New()
+	e.GET("/", handler)
 
 	// サーバーをポート8080で開始
-	log.Println("Server is running on http://localhost:8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		log.Fatalf("Failed to start server: %v", err)
-	}
+	e.Logger.Fatal(e.Start(":8080"))
 }
