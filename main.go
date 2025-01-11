@@ -12,8 +12,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	// `X-Forwarded-User` ヘッダーを取得
 	user := r.Header.Get("X-Forwarded-User")
 	if user == "" {
-		http.Error(w, "X-Forwarded-User header is missing", http.StatusBadRequest)
-		return
+		// ユーザー名が取得できなかった場合は "unknown" とする
+		user = "unknown"
 	}
 
 	var userURL = URL + "&entry.574283270=" + user
