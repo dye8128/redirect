@@ -33,7 +33,7 @@ func main() {
 	}
 
 	URL = os.Getenv("URL")
-	entry = os.Getenv("ENTRY_ID")
+	entry = os.Getenv("ENTRY")
 	if URL == "" || entry == "" {
 		log.Fatal("URL or ENTRY_ID not set in .env file")
 	}
