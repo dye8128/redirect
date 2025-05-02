@@ -29,7 +29,7 @@ func handler(c echo.Context) error {
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Println("Error loading .env file")
 	}
 
 	URL = os.Getenv("URL")
