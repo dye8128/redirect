@@ -3,12 +3,12 @@ package main
 import (
 	"log"
 	"net/http"
-
+	"os"
 	"github.com/labstack/echo/v4"
+	"github.com/joho/godotenv"
 )
 
-// リダイレクト先のURL
-var URL = "https://docs.google.com/forms/d/e/1FAIpQLScpiOMWtDtsZE_dapZGfHNcMlGfpdv2SQpDUVsB5nbM1G2E9w/viewform?usp=pp_url"
+var URL, entry string
 
 func handler(c echo.Context) error {
 	log.Println("Request received")
@@ -20,13 +20,24 @@ func handler(c echo.Context) error {
 		user = "unknown"
 	}
 
-	var userURL = URL + "&entry.574283270=" + user
+	var userURL = URL + "&entry." + entry + "=" + user
 
 	// リダイレクト
 	return c.Redirect(http.StatusFound, userURL)
 }
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	URL = os.Getenv("URL")
+	entry = os.Getenv("ENTRY_ID")
+	if URL == "" || entry == "" {
+		log.Fatal("URL or ENTRY_ID not set in .env file")
+	}
+
 	// サーバーのルートハンドラーを設定
 	e := echo.New()
 	e.GET("/", handler)
