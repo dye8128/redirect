@@ -1,4 +1,4 @@
-# traP ID を google form に自動入力する
+# traQ ID を google form に自動入力する
 
 ## NeoShowcase のビルド設定
 
